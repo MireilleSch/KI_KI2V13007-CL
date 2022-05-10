@@ -19,14 +19,11 @@ def ngrams(seq, n=3):
     return ngrams_list
 
 
-# print(prepare("Lorum ipsum dolor sit amet"))
-# print(ngrams("<Lorum>"))
-
-
 def ngram_table(text, n=3, limit=0):
     word_list = prepare(text)
     # output: ['Lorum', 'ipsum', 'dolor', 'sit', 'amet']
     ngram_dict = {}
+    limited_ordered_dict = {}
 
     for index, item in enumerate(word_list):
         tokenized_word = "<" + item + ">"
@@ -43,12 +40,29 @@ def ngram_table(text, n=3, limit=0):
                 ngram_dict[ngram] = 1
 
             index_2 += 1
+        index += 1
+
+    # Dict orderen
+    ordered_dict = dict(sorted(ngram_dict.items(), key=lambda x: x[1], reverse=True))
+    # Combi van 2 bronnen:
+    # BRON: https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
+    # BRON: https://careerkarma.com/blog/python-sort-a-dictionary-by-value/
+
+    allowed = True
+    for index, item in enumerate(ordered_dict):
+        # Als de limit 0 is gewoon de hele lijst returnen
+        if limit == 0:
+            return ordered_dict
+
+        elif index < limit:
+            # de KV-pairs die onder limit liggen in nieuwe lijst kopieren
+            key = item
+            limited_ordered_dict[key] = ordered_dict[key]
 
         index += 1
-    #TODO: Dict orderen en limit implementeren
-    return ngram_dict
+
+    return limited_ordered_dict
 
 
-print(ngram_table("hiep, hiep, hoera!"))
-# Output:
-# {'<hi': 2, 'hie': 2, 'iep': 2, 'ep>': 2, '<ho': 1, 'hoe': 1, 'oer': 1, 'era': 1, 'ra>': 1}
+print(ngram_table("hiep, hiep, hoera!", 3, 0))
+
